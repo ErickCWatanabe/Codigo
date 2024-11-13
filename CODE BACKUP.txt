@@ -1,0 +1,61 @@
+
+bool on=false;
+int dist = 0;
+
+int cm = 0;
+
+long readUltrasonicDistance(int triggerPin, int echoPin)
+{
+  pinMode(triggerPin, OUTPUT);  
+  digitalWrite(triggerPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(triggerPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(triggerPin, LOW);
+  pinMode(echoPin, INPUT);
+  return pulseIn(echoPin, HIGH);
+}
+
+void setup()
+{
+  pinMode(9, INPUT);
+   pinMode(13, INPUT);
+  pinMode(3, OUTPUT);
+   pinMode(9, OUTPUT);
+  attachInterrupt(0, ativa, RISING);
+}
+
+void loop()
+{
+  dist = 150;
+
+  if (digitalRead(13) == HIGH && digitalRead(9) == LOW) {
+    if (0.01723 * readUltrasonicDistance(7, 6) >= dist) {
+      tone(3, 92, 500); 
+      delay(100); 
+      noTone(3);
+      delay(1000); 
+    } else {
+      if (0.01723 * readUltrasonicDistance(7, 6) >= dist / 1.5) {
+        tone(3, 165, 500); 
+        delay(100); 
+        noTone(3);
+        delay(1000); 
+      }
+      if (0.01723 * readUltrasonicDistance(7, 6) <= dist / 1.5) {
+        tone(3, 523, 500);
+        delay(100); 
+        noTone(3);
+        delay(1000); 
+      }
+    }
+  }
+}
+
+void ativa(){
+ on=!on;
+ if(on)
+  digitalWrite(9, HIGH );
+  else
+  digitalWrite(9, LOW); 
+}
